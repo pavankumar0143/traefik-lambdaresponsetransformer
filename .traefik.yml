@@ -1,0 +1,30 @@
+name: lambdaresponsetransformer
+displayName: Lambda Response Transformer
+type: middleware
+summary: Parses AWS Lambda-style responses and transforms them into valid HTTP responses with proper status, body, and CORS headers.
+description: >
+  This middleware transforms a JSON-formatted Lambda proxy response into a standard HTTP response.
+  It handles decoding base64 bodies, applying headers, and setting appropriate CORS headers based on the original request.
+  Only supports lambda running in local environment. For local development, this plugin is required to be used in conjunction with lambdarequesttransformer, lambdaauthorizer plugins.
+
+import: github.com/pavankumar0143/traefik-lambdaresponsetransformer
+testData:
+  request:
+    method: POST
+    path: /test
+    headers:
+      Origin: https://example.com
+    body: |
+      {
+        "statusCode": 200,
+        "body": "{\"message\":\"Hello from Lambda\"}",
+        "isBase64Encoded": false,
+        "headers": {
+          "content-type": "application/json"
+        }
+      }
+  expected:
+    code: 200
+    headers:
+      content-type: application/json
+      access-control-allow-origin: https://example.com
